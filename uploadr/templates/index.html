@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flask Multiple Upload</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+.btn-primary:not(:disabled):not(.disabled).active {
+    background: #cbcd32;
+    color: black;
+    border-color:#cbcd32;
+}
+.btn-primary:not(:disabled):not(.disabled):hover {
+    background: #32cdcd;
+    color: black;
+    border-color:#32cdcd;
+}
+.btn-primary {
+    color: black;
+    background-color: #00ffb8de;
+    border-color: #48a0c1;
+}
+.btn-xl {
+    padding: 5px 5px;
+    font-size: 20px;
+    border-radius: 10px;
+    width:50%;
+}
+html {
+  font-size: 14px;
+}
+.myfont {
+  font-family: Lato;
+}
+.search-body{
+    margin-right: 40px;
+    margin-left: 200px;
+    font-family:Lato;
+    width: 960px;
+}
+.search-text{
+    margin-right: 40px;
+    margin-left: 0px;
+
+}
+#dropbox {
+  border: 2px dashed #ccc;
+  border-radius: 20px;
+  width: 480px;
+  font-family: sans-serif;
+  margin-left: 0px;
+  margin-right: 40px;
+  margin-top: 20px;
+  padding: 20px;
+}
+#container {
+    width: 2000px;
+    margin: auto;
+}
+#first {
+    width: 850px;
+    float: left;
+    height: 600px;
+}
+#second {
+    width: 300px;
+    float: left;
+    height: 330px;
+    background-color: #e8f9ee2e;
+    margin-top: 40px;
+    border-radius: 20px;
+    padding: 20px;
+    font-family: Lato;
+    font-size: 12px;
+}
+    </style>
+</head>
+<body style="background-color: #1c1c1c;color:white;margin:1px;padding:0px">
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#"><h3 class="myfont"><b>Face Search</b></h3></a>
+</nav>
+
+<!--<hr>-->
+
+<div id="container">
+<div id = "first">
+<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+
+
+    <!--<div class="col-sm-5 btn-group" data-toggle="buttons">-->
+            <!--<label class="btn btn-info">-->
+                <!--<input checked="checked" name="media_release" value="1" type="radio"> Yes-->
+            <!--</label>-->
+            <!--<label class="btn btn-info active">-->
+                <!--<input name="media_release" value="0" type="radio"> No-->
+            <!--</label>-->
+            <!--</div>-->
+
+
+
+
+
+
+    <!--<strong>Normal Text Box:</strong><br>-->
+    <!--<input type="text" size="20" name="input1" value="uploads"><p>-->
+
+    <!--<strong>Select Box:</strong><br>-->
+    <!--<select name="selectbox">-->
+        <!--<option value="abc">ABC</option>-->
+        <!--<option value="xyz">XYZ</option>-->
+    <!--</select><p>-->
+
+    <!--<strong>Checkbox:</strong><br>-->
+    <!--<input type="checkbox" name="checkbox" value="on" checked> On<p>-->
+
+    <!--<strong>Radio:</strong><br>-->
+    <!--<input type="radio" name="radio" value="yes" checked> Yes-->
+    <!--<input type="radio" name="radio" value="no"> No<p>-->
+
+    <!--<strong>Text Area:</strong><br>-->
+    <!--<textarea rows="4" cols="40" name="textarea">Text area contents.</textarea><p>-->
+<p><br>
+<div class ="search-body">
+    <h5 class = "search-text" style="color:#1abc9c;font-family:Lato">Search faces in your video database:</h5><br>
+
+
+    Add photos of person OR drag them into the box below in-order for search.
+
+    <div id="dropbox">
+        Drag and Drop Files Here
+    </div><p>
+
+    <div class="row">
+        <div id="list"></div>
+    </div>
+
+    <p></p>
+    <p></p>
+
+    <label class="btn btn-primary">
+    <i class="fa fa-image"></i> Add Person <input id="file-picker" type="file" style="display:none;" name="file" accept="image/*" multiple >
+    </label>
+     <div class="divider"> </div>
+    <label class="btn btn-primary">
+        <i class="fa fa-image"></i> Clear All <button type="button" id="clear-files" style="display:none;" onclick="clearFiles()"  ></button>
+    </label>
+
+    <p></p>
+    <p></p>
+    <p></p>
+
+    Query type :
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-primary active">
+            <input type="radio" name="radio" id="option1" value="interval" checked> Co-Appearance
+          </label>
+          <label class="btn btn-primary">
+            <input type="radio" name="radio" id="option2" value="next"> Next
+          </label>
+          <label class="btn btn-primary">
+            <input type="radio" name="radio" id="option3" value="eventually"> Eventually
+          </label>
+        </div>
+
+
+    <!--<button type="button" class="btn btn-primary" id="clear-files" onclick="clearFiles()" >Clear All</button>-->
+    <fieldset id="progress" style="display: none">
+        <legend>Files Progress</legend>
+
+        <div class="progress-trough">
+            <div id="progress-bar" class="progress-bar">0%</div>
+        </div>
+    </fieldset>
+
+    <p></p>
+    <p></p>
+
+    <label class="btn btn-primary btn-xl">
+        <i class="fa fa-image"></i> Search <input type="submit" value="Upload!" id="upload-button" style="display:none;">
+    </label>
+</div>
+</form>
+</div>
+
+
+<div id = "second">
+    <p></p>
+    <p></p>
+    <div class="panel panel-default">
+      <div class="panel-body">
+
+          <strong><p>Info:</p></strong>
+          This is a Python Flask web app to query faces in videos. <p>
+
+          <p> You can query to find <strong>intervals</strong>, find if a person appears right after<strong> (next)</strong>
+          another person, or appears <strong>eventually</strong> after some period of time. You will be able to choose the query type in the options. <p>
+
+          This uses JavaScript to post an Ajax upload to the back-end where a
+          progress bar to shows the status of the upload (note: it doesn't break down
+          the status per-picture, instead it's the status of the entire upload altogether).<p>
+
+      </div>
+    </div>
+
+</div>
+
+
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
+
+</body>
+</html>

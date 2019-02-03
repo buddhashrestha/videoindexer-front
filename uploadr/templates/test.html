@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Test</title>
+
+   <style>
+      p {
+         background-color: #eee;
+         border: thin solid #777;
+         padding: 10px;
+      }
+      .video-js{
+         float:left;
+         margin-right: 40px;
+
+      }
+      .event-list {
+         float:left;
+         border: black;
+         margin-left: 5px;
+         width: 200px;
+
+      }
+      .control{
+         clear: both;
+      }
+      .myfont {
+          font-family: Lato;
+        }
+      #container {
+        width: 2000px;
+        margin-top: 10px;
+        margin-left: 10px;
+        }
+
+      #myvideos li video{
+        width:240px;
+        height:170px;
+      }
+
+      #myvideos li video{
+        display: inline-block;
+        margin:10px 5px 10px 5px;
+      }
+
+      #myvideos li video:hover{
+        cursor:pointer;
+      }
+
+      #overlay :hover{
+        cursor:pointer;
+      }
+
+      #overlay {
+          position: fixed;
+          display: none;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0,0,0,0.7);
+          z-index: 2;
+          cursor: pointer;
+        }
+
+      #frame{
+        position:fixed;
+        display:none;
+        left:50%;
+        background-color:white;
+        width:740px;
+        height:400px;
+        margin-left:-350px;
+        padding-left:20px;
+        padding-right:20px;
+        padding-top:20px;
+        padding-bottom:20px;
+        margin-top:15px;
+        z-index: 3;
+      }
+   </style>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- unpkg : use the latest version of Video.js -->
+    <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
+    <link href="https://rawgithub.com/spchuang/videojs-markers/master/dist/videojs.markers.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
+    <script src="https://rawgithub.com/spchuang/videojs-markers/master/dist/videojs-markers.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body style="background-color: #1c1c1c;color:white;margin:1px;padding:0px">
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="/"><h3 class="myfont"><b>Overlay Test</b></h3></a>
+    </nav>
+    <div id = "container">
+        <div id = "overlay">    </div>
+
+        <div id = "frame">
+                <video
+                      id="my-vid"
+                      class="video-js vjs-default-skin"
+                      controls
+                      preload="metadata"
+                      width="700"
+                      height="360"
+                      data-setup='{"width": 700, "height": 360}'>
+                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
+                    <source src="https://vjs.zencdn.net/v/oceans.webm" type='video/webm' /><source src = "/static/6/friends2.track.mp4" type = 'video/mp4'/>
+                </video>
+        </div>
+
+        <div id = "wrapper">
+                <ul id = "myvideos">
+                   <li>
+                       <video
+                          id="my-vid2"
+                          class="video-js vjs-default-skin"
+                          controls
+                          preload="metadata"
+                          width="280"
+                          height="160"
+                          data-setup='{"width": 280, "height": 160}'>
+                               <source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
+                               <source src="https://vjs.zencdn.net/v/oceans.webm" type='video/webm' />
+                        </video>
+                   </li>
+                </ul>
+        </div>
+    </div>
+</body>
+
+<script>
+   // initialize video.js
+
+    var player3 = videojs("my-vid2");
+       player3.markers({
+          markers: [{time:1,duration:4},{time:8,duration:7},]
+       });
+
+
+    function someFunction() {
+        var player4 = videojs("my-vid");//do stuff
+        player4.markers({
+              markers: [{time:9,duration:4},{time:18,duration:7},]
+               });
+    }
+
+
+
+    $(function(){
+        $("#myvideos video").click(function(){
+            var id = $(this).attr("id").slice(0,-10);
+            var src = $(this).find('source').attr("src");
+            $(this)[0].pause();
+
+            $("#frame video").attr("src",src);
+            $("#frame video").attr("type",'video/mp4');
+
+            $("#frame").fadeIn();
+            $("#overlay").fadeIn();
+
+            someFunction()
+
+            $('#frame video')[0].load();
+        });
+    });
+
+    $("#overlay").click(function(){
+        $(this).fadeOut();
+        $("#frame").fadeOut();
+        $('#frame video')[0].pause();
+
+    });
+
+</script>
+</html>
